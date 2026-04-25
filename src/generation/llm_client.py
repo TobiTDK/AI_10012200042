@@ -124,10 +124,10 @@ def generate_response(
     Send a constructed RAG prompt to the configured API and return the response text.
     Low temperature (0.2) for factual, consistent answers.
     """
-    provider = _resolve_provider()
-    model = model or _default_model(provider)
-    client = _get_client()
     try:
+        provider = _resolve_provider()
+        model = model or _default_model(provider)
+        client = _get_client()
         completion = client.chat.completions.create(
             model=model,
             temperature=temperature,
@@ -148,6 +148,11 @@ def generate_response(
     except Exception as e:
         err = str(e)
         hint = ""
+        if "No LLM credentials found" in err or "API_KEY" in err:
+            hint = (
+                " Configure `.env` with either `OLLAMA_API_KEY` (+ `OLLAMA_MODEL`) "
+                "or `OPENAI_API_KEY` (+ optional `OPENAI_MODEL`)."
+            )
         if "not found" in err.lower() or "404" in err:
             hint = (
                 " Set OLLAMA_MODEL to a cloud model from https://ollama.com/search?c=cloud "
@@ -162,10 +167,10 @@ def generate_pure_llm(query: str, model: str | None = None) -> str:
     Generate an answer WITHOUT retrieval context.
     Used in evaluation to compare RAG vs. pure LLM.
     """
-    provider = _resolve_provider()
-    model = model or _default_model(provider)
-    client = _get_client()
     try:
+        provider = _resolve_provider()
+        model = model or _default_model(provider)
+        client = _get_client()
         completion = client.chat.completions.create(
             model=model,
             temperature=0.3,
@@ -183,6 +188,11 @@ def generate_pure_llm(query: str, model: str | None = None) -> str:
     except Exception as e:
         err = str(e)
         hint = ""
+        if "No LLM credentials found" in err or "API_KEY" in err:
+            hint = (
+                " Configure `.env` with either `OLLAMA_API_KEY` (+ `OLLAMA_MODEL`) "
+                "or `OPENAI_API_KEY` (+ optional `OPENAI_MODEL`)."
+            )
         if "not found" in err.lower() or "404" in err:
             hint = (
                 " Set OLLAMA_MODEL to a cloud model from https://ollama.com/search?c=cloud "
