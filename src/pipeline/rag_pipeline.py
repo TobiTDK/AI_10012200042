@@ -97,6 +97,13 @@ class RAGPipeline:
 
     def _embed_and_index(self) -> None:
         texts = [c["text"] for c in self.chunks]
+        if not texts:
+            raise RuntimeError(
+                "No document chunks available to index. "
+                f"Expected data files under `{os.path.abspath(_DATA_DIR)}`. "
+                "Add `Ghana_Election_Result.csv` and a budget PDF "
+                "(`2025_budget.pdf` or `2025_Budget_Statement.pdf`) before running."
+            )
         print(f"[Pipeline] Embedding {len(texts)} chunks...")
         embeddings = embed_texts(texts)
 

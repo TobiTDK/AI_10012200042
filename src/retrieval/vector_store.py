@@ -24,6 +24,10 @@ class VectorStore:
         Uses IndexFlatIP (inner product) after L2-normalising vectors
         so that inner product == cosine similarity.
         """
+        if embeddings.size == 0 or embeddings.ndim != 2:
+            raise ValueError(
+                "Embeddings are empty or invalid. Ensure documents were loaded and chunked before indexing."
+            )
         assert len(embeddings) == len(chunks), "Embedding count must match chunk count"
         self.dim = embeddings.shape[1]
         self.chunks = chunks

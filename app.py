@@ -118,11 +118,23 @@ if "messages" not in st.session_state:
 
 
 # Load pipeline
-with st.status("Loading your knowledge base… (first time ~30s)", expanded=True) as status:
-    _pl = get_pipeline(cm)
-    status.update(label="Ready", state="complete", expanded=False)
-
-st.session_state._pl = _pl
+try:
+    with st.status("Loading your knowledge base… (first time ~30s)", expanded=True) as status:
+        _pl = get_pipeline(cm)
+        status.update(label="Ready", state="complete", expanded=False)
+    st.session_state._pl = _pl
+except Exception as e:
+    st.error(
+        "Pipeline initialization failed. On Streamlit Cloud this usually means the `data/` files "
+        "are missing from the deployed repo.",
+        icon="🚨",
+    )
+    st.code(str(e))
+    st.info(
+        "Expected files in `data/`: `Ghana_Election_Result.csv` and "
+        "`2025_budget.pdf` (or `2025_Budget_Statement.pdf`)."
+    )
+    st.stop()
 
 # Title
 st.markdown('<h1 id="sg-title">SourceGround</h1>', unsafe_allow_html=True)

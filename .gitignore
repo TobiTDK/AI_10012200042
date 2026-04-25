@@ -11,5 +11,3 @@ build/
 outputs/logs.json
 outputs/chunks.json
 outputs/evaluation_results.json
-data/*.pdf
-data/*.csv
